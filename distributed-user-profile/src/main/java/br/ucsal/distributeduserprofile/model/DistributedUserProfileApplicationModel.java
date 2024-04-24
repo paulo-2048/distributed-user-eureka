@@ -13,8 +13,22 @@ public class DistributedUserProfileApplicationModel {
 
         @GetMapping("/profiles")
         public Map<String, String> getAllProfiles() {
-            return DistributedUserProfileApplicationModel.obterTodosOsUsuarios(); 
+            return DistributedUserProfileApplicationModel.obterTodosOsUsuarios();
         }
+
+        @GetMapping("/profilesInfo")
+        public String getProfilesInfo() {
+            StringBuilder profilesInfo = new StringBuilder();
+            Map<String, String> profiles = DistributedUserProfileApplicationModel.obterTodosOsUsuarios();
+
+            for (Map.Entry<String, String> profile : profiles.entrySet()) {
+                profilesInfo.append("Email: ").append(profile.getKey())
+                        .append(", Cargo: ").append(profile.getValue()).append("\n");
+            }
+
+            return profilesInfo.toString();
+        }
+
     }
 
     // HashMap para armazenar e-mails e cargos
@@ -78,10 +92,4 @@ public class DistributedUserProfileApplicationModel {
         adicionarUsuario("paulo@ucsal.edu.br", "Aluno");
     }
 
-    public static void main(String[] args) {
-        // System.out.println(obterCargoPorEmail("yuri@ucsal.edu.br"));
-        // boolean usuario = validarUsuario("everton@pro.ucsal.br", "Professor");
-        // System.out.println(usuario);
-        obterTodosOsUsuarios();
-    }
 }
