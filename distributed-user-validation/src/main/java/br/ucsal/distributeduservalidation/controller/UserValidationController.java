@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @RestController
 public class UserValidationController {
@@ -15,5 +16,15 @@ public class UserValidationController {
   @Autowired
   @Lazy
   private EurekaClient eurekaClient;
+
+  public static boolean validarUsuario(String email, String cargo, Map<String, String> profileList) {
+ 
+    if (profileList.containsKey(email)) {
+      if (profileList.get(email).equals(cargo)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
 }
