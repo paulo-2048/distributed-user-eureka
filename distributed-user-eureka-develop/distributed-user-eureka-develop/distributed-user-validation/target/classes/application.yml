@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: distributed-user-validation
+
+server:
+  port: 8084
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  # instance:
+  #   preferIpAddress: true # Optional, for preferring IP address in registration
