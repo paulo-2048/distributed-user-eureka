@@ -10,6 +10,7 @@ public class DistributedUserProfileApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(DistributedUserProfileApplication.class, args);
+		
 	}
 
 }
