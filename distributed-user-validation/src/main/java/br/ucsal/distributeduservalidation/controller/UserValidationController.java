@@ -45,4 +45,14 @@ public class UserValidationController {
     // agora você tem os dados de profileList em profiles
     return profiles;
   }
+
+@GetMapping("/validateUser/{email}/{cargo}")
+public String validateUser(@PathVariable String email, @PathVariable String cargo) {
+  Map<String, String> profileList = getProfiles();
+  if (validarUsuario(email, cargo, profileList)) {
+    return "Usuário validado com sucesso!";
+  } else {
+    return "Usuário não validado!";
+  }
+}
 }
