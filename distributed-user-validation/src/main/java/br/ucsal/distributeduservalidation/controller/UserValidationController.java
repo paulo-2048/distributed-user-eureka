@@ -1,18 +1,17 @@
 package br.ucsal.distributeduservalidation.controller;
 
 import com.netflix.discovery.EurekaClient;
-import com.netflix.discovery.shared.Applications;
+
 
 import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
 @RestController
@@ -35,8 +34,8 @@ public class UserValidationController {
   @GetMapping("/validate")
   public Map<String, String> getProfiles() {
     WebClient webClient = WebClient.create();
-    String profilesUrl = "http://localhost:8082/profiles"; 
-    Mono<Map<String, String>> profilesMono = webClient.get() 
+    String profilesUrl = "http://localhost:8082";
+    Mono<Map<String, String>> profilesMono = webClient.get()
         .uri(profilesUrl)
         .retrieve()
         .bodyToMono(new ParameterizedTypeReference<Map<String, String>>() {
@@ -46,13 +45,14 @@ public class UserValidationController {
     return profiles;
   }
 
-@GetMapping("/validateUser/{email}/{cargo}")
-public String validateUser(@PathVariable String email, @PathVariable String cargo) {
-  Map<String, String> profileList = getProfiles();
-  if (validarUsuario(email, cargo, profileList)) {
-    return "Usuário validado com sucesso!";
-  } else {
-    return "Usuário não validado!";
+  @GetMapping("/{email}/{cargo}")
+  public String validateUser(@PathVariable String email, @PathVariable String cargo) {
+    System.out.println(email + " " + cargo);
+    Map<String, String> profileList = getProfiles();
+    if (validarUsuario(email, cargo, profileList)) {
+      return "Usuário validado com sucesso!";
+    } else {
+      return "Usuário não validado!";
+    }
   }
-}
 }

@@ -9,7 +9,7 @@ import java.util.Map;
 @RestController
 public class DistributedUserProfileApplicationController {
 
-    @GetMapping("/profiles")
+    @GetMapping("/")
     public Map<String, String> getAllProfiles() {
         return DistributedUserProfileApplicationModel.obterTodosOsUsuarios();
     }
