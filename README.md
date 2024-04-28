@@ -37,7 +37,7 @@ Este repositório contém um conjunto de aplicações Java Spring Boot que imple
 - Lombok
 - Java 21
 
-## Desenvolvedor e Disciplina
+## Desenvolvedores e Disciplina
 
 Este conjunto de aplicações foi desenvolvido por Paulo Vitor de Santana Santos, Luis Guilherme de Oliveira Carvalho e Yuri de Jesus Gomes para a disciplina de Sistemas Distribuídos, ministrada pelo professor Everton Mendonça de Jesus na Universidade Católica de Salvador.
 
