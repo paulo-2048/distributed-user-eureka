@@ -36,6 +36,8 @@ Este repositório contém um conjunto de aplicações Java Spring Boot que imple
 - Spring WEB
 - Lombok
 - Java 21
+- Maven 3.9.6+
+- API REST
 
 ## Desenvolvedores e Disciplina
 
