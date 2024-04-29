@@ -2,6 +2,7 @@
 
 # Projeto de Serviço de Validação de Usuários e Obtenção de Perfis
 
+[Link do Repositório](https://github.com/paulo-2048/distributed-user-eureka.git)
 
 Este repositório contém um conjunto de aplicações Java Spring Boot que implementam um serviço de validação de usuários e obtenção de perfis. As aplicações utilizam Eureka para descoberta de serviços e DNS para resolução de nomes.
 
