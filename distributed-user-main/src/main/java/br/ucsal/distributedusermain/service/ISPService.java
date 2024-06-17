@@ -10,14 +10,12 @@ import java.util.ArrayList;
 
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Type;
-
 @Service
 public class ISPService {
 
   public String getService(String service) throws URISyntaxException {
 
-    // http://localhost:8090/dns/{service}
+    // http://localhost:8100/dns/{service}
 
     String ipService = getServiceIP(service);
 
@@ -27,7 +25,7 @@ public class ISPService {
 
   public String getServiceWithParams(String service, ArrayList<String> Params) throws URISyntaxException {
 
-    // http://localhost:8090/dns/{service}
+    // http://localhost:8100/dns/{service}
 
     String ipService = getServiceIP(service);
 
@@ -38,7 +36,7 @@ public class ISPService {
 
   public String getServiceIP(String service) throws URISyntaxException {
     HttpRequest request = HttpRequest.newBuilder()
-        .uri(new URI("http://localhost:8090/dns/" + service))
+        .uri(new URI("http://localhost:8100/dns/" + service))
         .GET()
         .build();
 
