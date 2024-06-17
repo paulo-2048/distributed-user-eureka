@@ -1,13 +1,18 @@
 package br.ucsal.distributedusermain.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
-
-import br.ucsal.distributedusermain.service.ISPService;
-
+import java.net.http.HttpRequest.BodyPublisher;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import br.ucsal.distributedusermain.service.ISPService;
 
 @RestController
 public class ISPServerController {
@@ -34,7 +39,8 @@ public class ISPServerController {
   }
 
   @GetMapping("/{serviceName}/{email}/{cargo}") // Validation
-  public String getServiceName(@PathVariable String serviceName, @PathVariable String email, @PathVariable String cargo) {
+  public String getServiceName(@PathVariable String serviceName, @PathVariable String email,
+      @PathVariable String cargo) {
 
     try {
 
@@ -44,6 +50,29 @@ public class ISPServerController {
       params.add(cargo);
 
       return ISPService.getServiceWithParams(serviceName, params);
+    } catch (Exception e) {
+      return "Erro ao acessar o serviço";
+    }
+  }
+
+  @GetMapping("{serviceName}/obterArquivo") // Profile - Obter Arquivo
+  public String getArquivo(@PathVariable String serviceName) {
+
+    try {
+      return ISPService.getService(serviceName);
+    } catch (Exception e) {
+      return "Erro ao acessar o serviço";
+    }
+  }
+
+  @PostMapping("{serviceName}/{route}") // Profile - Enviar Arquivo
+  public String salvarArquivo(@PathVariable String serviceName, @PathVariable String route, @RequestBody BodyPublisher arquivo) {
+
+    ArrayList<String> params = new ArrayList<>();
+    params.add(route);
+
+    try {
+      return ISPService.postServiceResponse(ISPService.getServiceIP(serviceName), arquivo, params);
     } catch (Exception e) {
       return "Erro ao acessar o serviço";
     }

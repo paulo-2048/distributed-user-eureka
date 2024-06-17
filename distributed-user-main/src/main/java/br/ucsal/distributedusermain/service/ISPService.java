@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 
@@ -138,5 +139,79 @@ public class ISPService {
 
     return null;
   }
+
+
+  public String postServiceResponse(String serviceIp, BodyPublisher bodyPublisher) throws URISyntaxException {
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(new URI(serviceIp))
+        .POST(bodyPublisher)
+        .build();
+
+    try {
+      HttpResponse<String> response = HttpClient.newBuilder().build().send(request,
+          HttpResponse.BodyHandlers.ofString());
+
+      String serviceResponse = "";
+      System.out.println(response.statusCode());
+      if (response.statusCode() >= 200 && response.statusCode() < 300) {
+        serviceResponse = response.body();
+      }
+      else {
+        System.out.println("Erro ao acessar o serviço");
+        serviceResponse = "Erro ao acessar o serviço";
+      }
+
+      return serviceResponse;
+    } catch (IOException e) {
+      System.out.println("Erro ao acessar o serviço");
+      e.printStackTrace();
+    } catch (InterruptedException e) {
+      System.out.println("Erro ao acessar o serviço");
+      e.printStackTrace();
+    }
+
+    return null;
+  }
+
+
+  public String postServiceResponse(String serviceIp, BodyPublisher bodyPublisher, ArrayList<String> Params) throws URISyntaxException {
+
+    String serviceRequest = serviceIp;
+
+    for (String param : Params) {
+      serviceRequest += "/" + param;
+    }
+
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(new URI(serviceRequest))
+        .POST(bodyPublisher)
+        .build();
+
+    try {
+      HttpResponse<String> response = HttpClient.newBuilder().build().send(request,
+          HttpResponse.BodyHandlers.ofString());
+
+      String serviceResponse = "";
+      System.out.println(response.statusCode());
+      if (response.statusCode() >= 200 && response.statusCode() < 300) {
+        serviceResponse = response.body();
+      }
+      else {
+        System.out.println("Erro ao acessar o serviço");
+        serviceResponse = "Erro ao acessar o serviço";
+      }
+
+      return serviceResponse;
+    } catch (IOException e) {
+      System.out.println("Erro ao acessar o serviço");
+      e.printStackTrace();
+    } catch (InterruptedException e) {
+      System.out.println("Erro ao acessar o serviço");
+      e.printStackTrace();
+    }
+
+    return null;
+  }
+
 
 }
