@@ -44,6 +44,7 @@ public class DistributedUserProfileApplicationService {
 
   // salvarArquivo
   public String salvarArquivo(String nomeArquivo) {
+    
     return null;
   }
 

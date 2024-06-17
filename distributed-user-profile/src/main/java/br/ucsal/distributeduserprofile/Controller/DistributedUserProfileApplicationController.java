@@ -4,9 +4,15 @@ import br.ucsal.distributeduserprofile.model.DistributedUserProfileApplicationMo
 import br.ucsal.distributeduserprofile.service.DistributedUserProfileApplicationService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
@@ -43,8 +49,17 @@ public class DistributedUserProfileApplicationController {
     }
 
     // salvarArquivo
-    // @PostMapping("/salvarArquivo/{nomeArquivo}")
-    // public String salvarArquivo(String nomeArquivo) {
 
-    // }
+ @PostMapping("/salvarArquivo/{fileName}")
+    public ResponseEntity<String> salvarArquivo(@PathVariable String fileName) {
+        String dfsAppAPort = "8086"; 
+        String dfsAppAUrl = "http://localhost:" + dfsAppAPort;
+
+        // aqui é pra mandar o arquivo para dfs-app-a
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        return restTemplate.exchange(dfsAppAUrl + "/salvarArquivo/" + fileName, HttpMethod.POST, entity, String.class);
+    }
+
 }
