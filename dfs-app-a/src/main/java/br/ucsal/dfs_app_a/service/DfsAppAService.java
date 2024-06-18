@@ -56,23 +56,18 @@ public class DfsAppAService {
       HttpResponse<String> responseAppC = HttpClient.newBuilder().build().send(requestAppC,
           HttpResponse.BodyHandlers.ofString());
 
-      System.out.println("\n\n\n\n\n");
-      System.out.println("Response app-b: " + responseAppB.body());
-      System.out.println("\n\n\n\n\n");
-      System.out.println("Response app-c: " + responseAppC.body());
-      System.out.println("\n\n\n\n\n");
-      if (responseAppB.body() == "true") {
+      if (responseAppB.body().toString().equals("true")) {
         return URI.create(DFS_B_URL + "/obterArquivo/" + nomeArquivo).toString();
-      } else if (responseAppC.body() == "true") {
+      } else if (responseAppC.body().toString().equals("true")) {
         return URI.create(DFS_C_URL + "/obterArquivo/" + nomeArquivo).toString();
       } else {
-        return "Arquivo não encontrado";
+        return null;
       }
 
     } catch (IOException | InterruptedException e) {
-      e.printStackTrace();
+      System.out.println("Erro ao verificar o arquivo requisitado");
+      return "Erro ao verificar o arquivo requisitado";
     }
-    return "Arquivo não encontrado";
   }
 
   // Obter o arquivo

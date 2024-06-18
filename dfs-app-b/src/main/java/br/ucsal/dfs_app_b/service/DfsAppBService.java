@@ -31,7 +31,7 @@ public class DfsAppBService {
     }
 
     public ByteArrayResource obterArquivo(String nomeArquivo) {
-        String basePath = "/home/arquivos/";
+        String basePath = "./arquivos/";
 
         // Verifica se o arquivo existe
         // Se existir, retorna o caminho do arquivo

@@ -1,6 +1,5 @@
 package br.ucsal.distributeduserprofile.service;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -27,17 +26,16 @@ public class DistributedUserProfileApplicationService {
 
       String arquivo = "";
 
-      System.out.println("\n\n\n\n\n" + response + "\n\n\n\n");
       if (response.statusCode() >= 200 && response.statusCode() < 300) {
         arquivo = response.body();
       } else {
-        throw new IOException("Erro ao acessar o sistema de arquivos distribuídos (App A)");
+        throw new Exception(response.statusCode() + " - " + response.body();
       }
 
       return arquivo;
     } catch (Exception e) {
       System.out.println(e);
-      return "Erro ao acessar o sistema de arquivos distribuídos (App A)";
+      return e.getMessage();
     }
 
   }

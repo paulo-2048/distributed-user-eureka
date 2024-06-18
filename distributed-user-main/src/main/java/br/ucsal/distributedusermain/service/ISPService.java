@@ -26,7 +26,8 @@ public class ISPService {
 
   public String getServiceWithParams(String service, ArrayList<String> Params) throws URISyntaxException {
 
-    // http://localhost:8100/dns/{service}
+    // http://localhost:8100/dns/{service}/obterArquivo/{nomeArquivo}
+
 
     String ipService = getServiceIP(service);
 

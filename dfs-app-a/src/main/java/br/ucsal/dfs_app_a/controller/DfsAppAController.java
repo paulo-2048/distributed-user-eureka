@@ -17,7 +17,12 @@ public class DfsAppAController {
 
   @GetMapping("/obterArquivo/{nomeArquivo}")
   public String verificarArquivo(@PathVariable String nomeArquivo) {
-    String caminhoArquivo = service.verificarArquivo(nomeArquivo);
+    String caminhoArquivo = service.verificarArquivo(nomeArquivo); // Arquivo não encontrado
+
+    if (caminhoArquivo == null) {
+      return "Arquivo não encontrado";
+    }
+    
     String conteudoArquivo = service.obterArquivo(caminhoArquivo);
   
     String destino = DecidirEnvio(caminhoArquivo);
