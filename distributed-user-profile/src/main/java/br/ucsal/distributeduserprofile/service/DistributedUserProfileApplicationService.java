@@ -29,7 +29,7 @@ public class DistributedUserProfileApplicationService {
       if (response.statusCode() >= 200 && response.statusCode() < 300) {
         arquivo = response.body();
       } else {
-        throw new Exception(response.statusCode() + " - " + response.body();
+        throw new Exception(response.statusCode() + " - " + response.body());
       }
 
       return arquivo;
