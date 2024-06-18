@@ -18,8 +18,12 @@ public class DfsAppAController {
   @GetMapping("/obterArquivo/{nomeArquivo}")
   public String verificarArquivo(@PathVariable String nomeArquivo) {
     String caminhoArquivo = service.verificarArquivo(nomeArquivo);
-
-    return service.obterArquivo(caminhoArquivo);
+    String conteudoArquivo = service.obterArquivo(caminhoArquivo);
+  
+    String destino = DecidirEnvio(caminhoArquivo);
+  
+    // Retornar o conteúdo do arquivo e o destino após chamada
+    return "Conteúdo do arquivo: " + conteudoArquivo + "\nDestino: " + destino;
   }
 
   public String DecidirEnvio(String caminhoArquivo) {
