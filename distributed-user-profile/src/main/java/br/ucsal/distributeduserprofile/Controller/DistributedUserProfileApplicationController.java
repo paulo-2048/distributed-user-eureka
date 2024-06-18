@@ -1,7 +1,6 @@
 package br.ucsal.distributeduserprofile.Controller;
 
-import br.ucsal.distributeduserprofile.model.DistributedUserProfileApplicationModel;
-import br.ucsal.distributeduserprofile.service.DistributedUserProfileApplicationService;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -14,7 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
+import br.ucsal.distributeduserprofile.model.DistributedUserProfileApplicationModel;
+import br.ucsal.distributeduserprofile.service.DistributedUserProfileApplicationService;
 
 @RestController
 public class DistributedUserProfileApplicationController {
@@ -42,7 +42,7 @@ public class DistributedUserProfileApplicationController {
 
     // obterArquivo
     @GetMapping("/obterArquivo/{nomeArquivo}")
-    public String obterArquivo(String nomeArquivo) {
+    public String obterArquivo(@PathVariable String nomeArquivo) {
 
         return service.obterArquivo(nomeArquivo);
 
@@ -50,9 +50,9 @@ public class DistributedUserProfileApplicationController {
 
     // salvarArquivo
 
- @PostMapping("/salvarArquivo/{fileName}")
+    @PostMapping("/salvarArquivo/{fileName}")
     public ResponseEntity<String> salvarArquivo(@PathVariable String fileName) {
-        String dfsAppAPort = "8086"; 
+        String dfsAppAPort = "8086";
         String dfsAppAUrl = "http://localhost:" + dfsAppAPort;
 
         // aqui é pra mandar o arquivo para dfs-app-a

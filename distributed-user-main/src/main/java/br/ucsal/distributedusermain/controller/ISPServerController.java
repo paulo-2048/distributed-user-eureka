@@ -55,12 +55,17 @@ public class ISPServerController {
     }
   }
 
-  @GetMapping("{serviceName}/obterArquivo") // Profile - Obter Arquivo
-  public String getArquivo(@PathVariable String serviceName) {
+  @GetMapping("{serviceName}/obterArquivo/{nomeArquivo}") // Profile - Obter Arquivo
+  public String getArquivo(@PathVariable String serviceName, @PathVariable String nomeArquivo) {
+
+    ArrayList<String> params = new ArrayList<>();
+    params.add("obterArquivo");
+    params.add(nomeArquivo);
 
     try {
-      return ISPService.getService(serviceName);
+      return ISPService.getServiceWithParams(serviceName, params);
     } catch (Exception e) {
+      System.out.println(e.getMessage());
       return "Erro ao acessar o serviço";
     }
   }

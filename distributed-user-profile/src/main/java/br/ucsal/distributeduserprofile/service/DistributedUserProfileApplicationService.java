@@ -26,17 +26,17 @@ public class DistributedUserProfileApplicationService {
           HttpResponse.BodyHandlers.ofString());
 
       String arquivo = "";
+
+      System.out.println("\n\n\n\n\n" + response + "\n\n\n\n");
       if (response.statusCode() >= 200 && response.statusCode() < 300) {
         arquivo = response.body();
       } else {
-        System.out.println("Erro ao acessar o sistema de arquivos distribuídos (App A)");
-        System.out.println(response.body());
-        arquivo = "Erro ao acessar o sistema de arquivos distribuídos (App A)";
+        throw new IOException("Erro ao acessar o sistema de arquivos distribuídos (App A)");
       }
 
       return arquivo;
-    } catch (IOException | InterruptedException e) {
-      System.out.println("Erro ao acessar o sistema de arquivos distribuídos (App A)");
+    } catch (Exception e) {
+      System.out.println(e);
       return "Erro ao acessar o sistema de arquivos distribuídos (App A)";
     }
 
@@ -44,7 +44,7 @@ public class DistributedUserProfileApplicationService {
 
   // salvarArquivo
   public String salvarArquivo(String nomeArquivo) {
-    
+
     return null;
   }
 
