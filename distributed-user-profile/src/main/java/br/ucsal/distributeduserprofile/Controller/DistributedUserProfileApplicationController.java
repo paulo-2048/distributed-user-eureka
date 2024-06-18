@@ -10,8 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.ucsal.distributeduserprofile.model.DistributedUserProfileApplicationModel;
 import br.ucsal.distributeduserprofile.service.DistributedUserProfileApplicationService;
@@ -51,15 +54,13 @@ public class DistributedUserProfileApplicationController {
     // salvarArquivo
 
     @PostMapping("/salvarArquivo/{fileName}")
-    public ResponseEntity<String> salvarArquivo(@PathVariable String fileName) {
-        String dfsAppAPort = "8086";
-        String dfsAppAUrl = "http://localhost:" + dfsAppAPort;
+    public ResponseEntity<String> salvarArquivo(@PathVariable String fileName, @RequestBody String arquivo) {
+        // return service.salvarArquivo(fileName, arquivo);
 
-        // aqui é pra mandar o arquivo para dfs-app-a
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-        return restTemplate.exchange(dfsAppAUrl + "/salvarArquivo/" + fileName, HttpMethod.POST, entity, String.class);
+        System.out.println("\n\n\n\n\n\n" + arquivo + "\n\n\n\n\n\n");
+
+
+        return ResponseEntity.ok(service.salvarArquivo(fileName, arquivo));
     }
 
 }

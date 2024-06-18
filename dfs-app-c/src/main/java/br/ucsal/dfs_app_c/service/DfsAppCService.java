@@ -1,6 +1,7 @@
 package br.ucsal.dfs_app_c.service;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -50,16 +51,47 @@ public class DfsAppCService {
     }
   }
 
-  private String getFileName(String nomeArquivo) {
-    return nomeArquivo.substring(0, nomeArquivo.lastIndexOf("_"));
+  public String salvarArquivo(String nomeArquivo, String arquivo) {
 
-    // Ex: arquivo_v1.txt -> arquivo
+    // Converter o aqruivo base64 para arquivo
+    // Salvar o arquivo dentro da pasta "arquivo" dentro da pasta raiz do projeto
+    // Se a pasta não existir, criar a pasta
+    // spring boot
+
+    Path basePath = new File("dfs-app-c/arquivos/").toPath();
+
+    // Constrói o caminho completo para o arquivo
+    Path fullPath = Paths.get(basePath.toString(), nomeArquivo);
+
+    if (!Files.exists(fullPath.getParent())) {
+      try {
+        Files.createDirectory(fullPath.getParent());
+      } catch (IOException e) {
+        e.printStackTrace();
+        return null;
+      }
+    }
+
+    File file = base64ToFile(arquivo, fullPath.toString());
+
+    System.out.println(file);
+    if (file != null) {
+      return nomeArquivo + " Salvo em App C";
+    } else {
+      return null;
+    }
   }
 
-  private String getFileVersion(String nomeArquivo) {
-    return nomeArquivo.substring(nomeArquivo.lastIndexOf("_") + 1, nomeArquivo.lastIndexOf("."));
-
-    // Ex: arquivo_v1.txt -> 1
+  private File base64ToFile(String base64, String nomeArquivo) {
+    try {
+      byte[] decodedBytes = java.util.Base64.getDecoder().decode(base64);
+      File file = new File(nomeArquivo);
+      Files.write(file.toPath(), decodedBytes);
+      return file;
+    } catch (IOException e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 
 }

@@ -1,6 +1,5 @@
 package br.ucsal.distributedusermain.controller;
 
-import java.net.http.HttpRequest.BodyPublisher;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -9,8 +8,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.ucsal.distributedusermain.service.ISPService;
 
@@ -70,15 +70,18 @@ public class ISPServerController {
     }
   }
 
-  @PostMapping("{serviceName}/{route}") // Profile - Enviar Arquivo
-  public String salvarArquivo(@PathVariable String serviceName, @PathVariable String route, @RequestBody BodyPublisher arquivo) {
+  @PostMapping("{serviceName}/salvarArquivo/{nomeArquivo}") // Profile - Enviar Arquivo
+  public String salvarArquivo(@PathVariable String serviceName, @PathVariable String nomeArquivo,
+      @RequestParam("arquivo") MultipartFile arquivo) {
 
     ArrayList<String> params = new ArrayList<>();
-    params.add(route);
+    params.add("salvarArquivo");
+    params.add(nomeArquivo);
 
     try {
-      return ISPService.postServiceResponse(ISPService.getServiceIP(serviceName), arquivo, params);
+      return ISPService.postServiceResponseFile(ISPService.getServiceIP(serviceName), arquivo, params);
     } catch (Exception e) {
+      System.out.println(e.getMessage());
       return "Erro ao acessar o serviço";
     }
   }

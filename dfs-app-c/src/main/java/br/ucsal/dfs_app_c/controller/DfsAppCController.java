@@ -6,6 +6,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.ucsal.dfs_app_c.service.DfsAppCService;
@@ -29,7 +31,20 @@ public class DfsAppCController {
 
     return ResponseEntity
         .ok()
-        .contentType(MediaType.TEXT_PLAIN)
+        .contentType(MediaType.MULTIPART_FORM_DATA)
         .body(resource);
+  }
+
+  @PostMapping("/salvarArquivo/{nomeArquivo}")
+  public ResponseEntity<String> salvarArquivo(@PathVariable String nomeArquivo, @RequestBody String arquivo) {
+    // return service.salvarArquivo(nomeArquivo);
+
+    String response = service.salvarArquivo(nomeArquivo, arquivo);
+
+    if (response == null) {
+      return ResponseEntity.badRequest().body("Erro ao salvar arquivo");
+    }
+
+    return ResponseEntity.ok(response);
   }
 }

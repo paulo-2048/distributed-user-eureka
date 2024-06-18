@@ -1,10 +1,10 @@
 package br.ucsal.dfs_app_a.controller;
 
-import java.util.Random;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.ucsal.dfs_app_a.service.DfsAppAService;
@@ -22,25 +22,23 @@ public class DfsAppAController {
     if (caminhoArquivo == null) {
       return "Arquivo não encontrado";
     }
-    
-    String conteudoArquivo = service.obterArquivo(caminhoArquivo);
-  
-    String destino = DecidirEnvio(caminhoArquivo);
-  
-    // Retornar o conteúdo do arquivo e o destino após chamada
-    return "Conteúdo do arquivo: " + conteudoArquivo + "\nDestino: " + destino;
+
+    return null;
   }
 
-  public String DecidirEnvio(String caminhoArquivo) {
-    Random random = new Random();
-    int sorteio = random.nextInt(10) + 1;
+  @PostMapping("/salvarArquivo/{nomeArquivo}")
+  public String salvarArquivo(@PathVariable String nomeArquivo, @RequestBody String arquivo) {
 
-    if (sorteio % 2 == 0) {
-      // Número par, persistir em app-b
-      return DfsAppAService.persistirEmDfsB(caminhoArquivo);
-    } else {
-      // Número ímpar, persistir em app-c
-      return DfsAppAService.persistirEmDfsC(caminhoArquivo);
+    String caminhoArquivo = service.salvarArquivo(nomeArquivo, arquivo);
+
+    if (caminhoArquivo == null) {
+      return "Erro ao salvar o arquivo";
     }
+
+    // String destino = DecidirEnvio(caminhoArquivo);
+
+    // Retornar o caminho do arquivo e o destino após chamada
+    return "Caminho do arquivo: \n" + caminhoArquivo;
   }
+
 }

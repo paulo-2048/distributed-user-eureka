@@ -8,8 +8,10 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Base64;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ISPService {
@@ -27,7 +29,6 @@ public class ISPService {
   public String getServiceWithParams(String service, ArrayList<String> Params) throws URISyntaxException {
 
     // http://localhost:8100/dns/{service}/obterArquivo/{nomeArquivo}
-
 
     String ipService = getServiceIP(service);
 
@@ -204,6 +205,59 @@ public class ISPService {
     }
 
     return null;
+  }
+
+  public String postServiceResponseFile(String serviceIp, MultipartFile file, ArrayList<String> Params)
+      throws URISyntaxException {
+    String serviceRequest = serviceIp;
+
+    for (String param : Params) {
+      serviceRequest += "/" + param;
+    }
+
+    String fileBase64 = fileToBase64(file);
+
+    System.out.println("\n\n\n\n\n\n" + fileBase64 + "\n\n\n\n\n\n");
+
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(new URI(serviceRequest))
+        .header("Content-Type", "application/json")
+        .POST(HttpRequest.BodyPublishers.ofString(fileBase64))
+        .build();
+
+    try {
+      HttpResponse<String> response = HttpClient.newBuilder().build().send(request,
+          HttpResponse.BodyHandlers.ofString());
+
+      String serviceResponse = "";
+      System.out.println(response.statusCode());
+      if (response.statusCode() >= 200 && response.statusCode() < 300) {
+        serviceResponse = response.body();
+      } else {
+        System.out.println("Erro ao acessar o serviço");
+        throw new Exception("Erro ao acessar o serviço");
+      }
+
+      return serviceResponse;
+    } catch (Exception e) {
+      System.out.println("Erro ao acessar o serviço");
+      e.printStackTrace();
+    }
+
+    return null;
+  }
+
+  private String fileToBase64(MultipartFile file) {
+
+    try {
+      byte[] fileContent = file.getBytes();
+      return Base64.getEncoder().encodeToString(fileContent);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return null;
+
   }
 
 }

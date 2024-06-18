@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Random;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -27,6 +28,21 @@ public class DfsAppAService {
     RestTemplate restTemplate = new RestTemplate();
     String response = restTemplate.postForObject(DFS_C_URL + "/persistir", caminhoArquivo, String.class);
     return "Persisted in app-c: " + response;
+  }
+
+  public String DecidirEnvio(String caminhoArquivo) {
+    Random random = new Random();
+    int sorteio = random.nextInt(10) + 1;
+
+    if (sorteio % 2 == 0) {
+      // Número par, persistir em app-b
+      System.out.println("Persistindo em app-b");
+      return DFS_B_URL;
+    } else {
+      // Número ímpar, persistir em app-c
+      System.out.println("Persistindo em app-c");
+      return DFS_C_URL;
+    }
   }
 
   // Verificar se o arquivo existe
@@ -93,4 +109,38 @@ public class DfsAppAService {
       return "Erro ao obter o arquivo requisitado";
     }
   }
+
+  // Salvar o arquivo
+  public String salvarArquivo(String nomeArquivo, String arquivo) {
+
+    // arquivo = txt in base64
+    String urlPersistencia = DecidirEnvio(nomeArquivo);
+
+    System.out.println("URL de persistência: " + urlPersistencia);
+    try {
+
+      HttpRequest request = HttpRequest.newBuilder()
+          .uri(URI.create(urlPersistencia + "/salvarArquivo/" + nomeArquivo))
+          .header("Content-Type", "application/json")
+          .POST(HttpRequest.BodyPublishers.ofString(arquivo))
+          .build();
+
+      // Envia a requisição
+      HttpResponse<String> response = HttpClient.newBuilder().build().send(request,
+          HttpResponse.BodyHandlers.ofString());
+
+      // Verifica a resposta
+      if (response.statusCode() >= 200 && response.statusCode() < 300) {
+        return "Arquivo salvo com sucesso " + response.body();
+      } else {
+        System.out.println("Erro ao salvar o arquivo");
+        System.out.println(response.body());
+        throw new Exception("Erro ao salvar o arquivo");
+      }
+    } catch (Exception e) {
+      System.out.println("Erro ao salvar o arquivo");
+      return null;
+    }
+  }
+
 }
