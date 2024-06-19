@@ -1,8 +1,6 @@
 package br.ucsal.dfs_app_b.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,17 +20,22 @@ public class DfsAppBController {
   public ResponseEntity<Boolean> verificarArquivo(@PathVariable String nomeArquivo) {
     // return service.verificarArquivo(nomeArquivo);
 
-    return ResponseEntity.ok(service.verificarArquivo(nomeArquivo));
+    Boolean response = service.verificarArquivo(nomeArquivo);
+
+    System.out.println("\n\n\n\n\n\n\n" + response + "\n\n\n\n\n\n\n");
+
+    return ResponseEntity.ok(response);
   }
 
   @GetMapping("/obterArquivo/{nomeArquivo}")
-  public ResponseEntity<ByteArrayResource> obterArquivo(@PathVariable String nomeArquivo) {
-    ByteArrayResource resource = service.obterArquivo(nomeArquivo);
+  public ResponseEntity<String> obterArquivo(@PathVariable String nomeArquivo) {
+    String resource = service.obterArquivo(nomeArquivo);
 
-    return ResponseEntity
-        .ok()
-        .contentType(MediaType.MULTIPART_FORM_DATA)
-        .body(resource);
+    if (resource == null) {
+      return ResponseEntity.badRequest().body("Arquivo não encontrado");
+    }
+
+    return ResponseEntity.ok(resource);
   }
 
   @PostMapping("/salvarArquivo/{nomeArquivo}")
@@ -44,7 +47,7 @@ public class DfsAppBController {
     if (response == null) {
       return ResponseEntity.badRequest().body("Erro ao salvar arquivo");
     }
-    
+
     return ResponseEntity.ok(response);
   }
 }

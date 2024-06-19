@@ -1,5 +1,7 @@
 package br.ucsal.distributedusermain.service;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -7,9 +9,13 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Base64;
 
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,14 +32,37 @@ public class ISPService {
 
   }
 
-  public String getServiceWithParams(String service, ArrayList<String> Params) throws URISyntaxException {
+  public Resource getServiceFileWithParams(String service, ArrayList<String> Params) throws URISyntaxException {
 
     // http://localhost:8100/dns/{service}/obterArquivo/{nomeArquivo}
 
     String ipService = getServiceIP(service);
 
-    return getServiceResponse(ipService, Params);
+    String fileBase64 = getServiceResponse(ipService, Params);
 
+    if (fileBase64 == null) {
+      return null;
+    }
+    // tranform file to resource
+
+    // Decode Base64 string to byte[]
+    byte[] decodedBytes = Base64.getDecoder().decode(fileBase64);
+
+    // Write bytes to a temporary file
+    File tempFile;
+    try {
+      tempFile = File.createTempFile("temp", ".txt");
+
+      tempFile.deleteOnExit(); // Clean up after JVM exits
+      try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+        fos.write(decodedBytes);
+      }
+      return new FileSystemResource(tempFile);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 
   public String getServiceIP(String service) throws URISyntaxException {
@@ -98,6 +127,16 @@ public class ISPService {
     return null;
   }
 
+  public String getServiceWithParams(String service, ArrayList<String> Params) throws URISyntaxException {
+
+    // http://localhost:8100/dns/{service}/obterArquivo/{nomeArquivo}
+
+    String ipService = getServiceIP(service);
+
+    return getServiceResponse(ipService, Params);
+
+  }
+
   public String getServiceResponse(String serviceIP, ArrayList<String> Params) throws URISyntaxException {
 
     String serviceRequest = serviceIP;
@@ -118,7 +157,7 @@ public class ISPService {
           HttpResponse.BodyHandlers.ofString());
 
       String serviceResponse = "";
-      System.out.println(response.statusCode());
+      System.out.println("\n\n\n\n" + response.body());
       if (response.statusCode() >= 200 && response.statusCode() < 300) {
         serviceResponse = response.body();
       } else {
@@ -257,7 +296,6 @@ public class ISPService {
     }
 
     return null;
-
   }
 
 }

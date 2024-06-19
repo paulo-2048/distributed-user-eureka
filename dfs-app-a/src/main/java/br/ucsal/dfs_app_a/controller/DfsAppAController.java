@@ -23,7 +23,7 @@ public class DfsAppAController {
       return "Arquivo não encontrado";
     }
 
-    return null;
+    return service.obterArquivo(caminhoArquivo);
   }
 
   @PostMapping("/salvarArquivo/{nomeArquivo}")

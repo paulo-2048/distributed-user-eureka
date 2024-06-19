@@ -5,6 +5,10 @@ import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +42,16 @@ public class ISPServerController {
     }
   }
 
+  @PostMapping("/{serviceName}/salvar")
+  public String postServiceName(@PathVariable String serviceName) {
+
+    try {
+      return ISPService.getService(serviceName);
+    } catch (Exception e) {
+      return "Erro ao acessar o serviço";
+    }
+  }
+
   @GetMapping("/{serviceName}/{email}/{cargo}") // Validation
   public String getServiceName(@PathVariable String serviceName, @PathVariable String email,
       @PathVariable String cargo) {
@@ -56,17 +70,25 @@ public class ISPServerController {
   }
 
   @GetMapping("{serviceName}/obterArquivo/{nomeArquivo}") // Profile - Obter Arquivo
-  public String getArquivo(@PathVariable String serviceName, @PathVariable String nomeArquivo) {
+  public ResponseEntity<Resource> getArquivo(@PathVariable String serviceName, @PathVariable String nomeArquivo) {
 
     ArrayList<String> params = new ArrayList<>();
     params.add("obterArquivo");
     params.add(nomeArquivo);
 
     try {
-      return ISPService.getServiceWithParams(serviceName, params);
+      Resource responseFile = ISPService.getServiceFileWithParams(serviceName, params);
+
+      if (responseFile == null) {
+        throw new Exception("Arquivo não encontrado!");
+      }
+
+      return ResponseEntity.ok()
+          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + responseFile.getFilename() + "\"")
+          .contentType(MediaType.APPLICATION_OCTET_STREAM)
+          .body(responseFile);
     } catch (Exception e) {
-      System.out.println(e.getMessage());
-      return "Erro ao acessar o serviço";
+      return ResponseEntity.badRequest().body(null);
     }
   }
 

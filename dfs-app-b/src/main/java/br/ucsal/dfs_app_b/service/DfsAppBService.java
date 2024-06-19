@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,37 +15,32 @@ public class DfsAppBService {
         // Verifica se o arquivo existe
         // Ex file: arquivo_v1.txt
 
-        String basePath = "./arquivos/";
+        Path basePath = new File("dfs-app-b/arquivos/").toPath();
+
+        // Constrói o caminho completo para o arquivo
+        Path fullPath = Paths.get(basePath.toString(), nomeArquivo);
 
         // Verifica se o arquivo existe
         // Se existir, retorna true
 
-        String fullPath = basePath + nomeArquivo;
-
-        File file = new File(fullPath);
-        if (file.exists()) {
+        if (Files.exists(fullPath)) {
             return true;
         }
 
         return false;
     }
 
-    public ByteArrayResource obterArquivo(String nomeArquivo) {
-        String basePath = "./arquivos/";
+    public String obterArquivo(String nomeArquivo) {
+        Path basePath = new File("dfs-app-b/arquivos/").toPath();
 
-        // Verifica se o arquivo existe
-        // Se existir, retorna o caminho do arquivo
+        // Constrói o caminho completo para o arquivo
+        Path fullPath = Paths.get(basePath.toString(), nomeArquivo);
 
-        String fullPath = basePath + nomeArquivo;
-
-        try {
-            File file = new File(fullPath);
-            Path path = Paths.get(file.getAbsolutePath());
-            ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
-
-            return resource;
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (Files.exists(fullPath)) {
+            File file = fullPath.toFile();
+            String base64 = fileToBase64(file);
+            return base64;
+        } else {
             return null;
         }
     }
@@ -88,6 +82,16 @@ public class DfsAppBService {
             File file = new File(nomeArquivo);
             Files.write(file.toPath(), decodedBytes);
             return file;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private String fileToBase64(File arquivo) {
+        try {
+            byte[] fileContent = Files.readAllBytes(arquivo.toPath());
+            return java.util.Base64.getEncoder().encodeToString(fileContent);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

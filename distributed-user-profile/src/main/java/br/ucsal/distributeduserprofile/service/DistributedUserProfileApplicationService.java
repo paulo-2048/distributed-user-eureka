@@ -1,16 +1,32 @@
 package br.ucsal.distributeduserprofile.service;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class DistributedUserProfileApplicationService {
+
+  public static String salvarPerfisComoTxt(Map<String, String> perfis) {
+    String fileName = "Perfis_V1.txt";
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+      for (Map.Entry<String, String> entry : perfis.entrySet()) {
+        writer.write(entry.getKey() + ": " + entry.getValue());
+        writer.newLine();
+      }
+      return "O arquivo foi convertido e salvo como " + fileName + " com sucesso.";
+    } catch (IOException e) {
+      e.printStackTrace();
+      return "Erro ao salvar o arquivo: " + e.getMessage();
+    }
+  }
 
   // obterArquivo
   public String obterArquivo(String nomeArquivo) {
@@ -26,18 +42,18 @@ public class DistributedUserProfileApplicationService {
       HttpResponse<String> response = HttpClient.newBuilder().build().send(request,
           HttpResponse.BodyHandlers.ofString());
 
-      String arquivo = "";
+      String arquivoBase64 = null;
 
       if (response.statusCode() >= 200 && response.statusCode() < 300) {
-        arquivo = response.body();
+        arquivoBase64 = response.body();
       } else {
         throw new Exception(response.statusCode() + " - " + response.body());
       }
 
-      return arquivo;
+      return arquivoBase64;
     } catch (Exception e) {
       System.out.println(e);
-      return e.getMessage();
+      return null;
     }
 
   }

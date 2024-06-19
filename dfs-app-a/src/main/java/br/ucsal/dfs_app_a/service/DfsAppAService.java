@@ -94,19 +94,21 @@ public class DfsAppAService {
       HttpResponse<String> response = HttpClient.newBuilder().build().send(request,
           HttpResponse.BodyHandlers.ofString());
 
+      System.out.println("\n\n\n\n\n\n" + response.body() + "\n\n\n\n\n\n");
+
       String arquivo = "";
       if (response.statusCode() >= 200 && response.statusCode() < 300) {
         arquivo = response.body();
       } else {
         System.out.println("Erro ao obter o arquivo requisitado");
         System.out.println(response.body());
-        arquivo = "Erro ao obter o arquivo requisitado";
+        arquivo = null;
       }
 
       return arquivo;
     } catch (IOException | InterruptedException e) {
       System.out.println("Erro ao obter o arquivo requisitado");
-      return "Erro ao obter o arquivo requisitado";
+      return null;
     }
   }
 

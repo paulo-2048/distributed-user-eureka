@@ -30,6 +30,11 @@ public class DistributedUserProfileApplicationController {
         return DistributedUserProfileApplicationModel.obterTodosOsUsuarios();
     }
 
+    @PostMapping("/salvar")
+    public String salvarPerfis(@RequestBody Map<String, String> perfis) {
+        return DistributedUserProfileApplicationService.salvarPerfisComoTxt(perfis); 
+    }
+
     @GetMapping("/profilesInfo")
     public String getProfilesInfo() {
         StringBuilder profilesInfo = new StringBuilder();
