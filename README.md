@@ -50,6 +50,7 @@ Este repositório contém um conjunto de aplicações Java Spring Boot que imple
    - Para enviar o arquivo, basta antes apenas dar um upload nele no Multipart Form do Insomnia ou qualquer outro. E também passar, no valor do parâmetro de {NomeArquivo} o nome do arquivo.
    - Para baixar o arquivo, basta apenas copiar a url e colar no navegador que ele fará o donwload (http://localhost:8080/profile/obterArquivo/:NomeArquivo)
    - Se efetuado o teste no insomnia, ele retorna o conteúdo do arquivo.
+   - Esse endpoint também pode ser passado no navegador para obter a primeira versão do arquivo com a lista dos perfis: (http://localhost:8080/profile/salvar)
 
 ## Tecnologias Utilizadas
 
