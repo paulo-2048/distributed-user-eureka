@@ -14,20 +14,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class DistributedUserProfileApplicationService {
 
-  public static String salvarPerfisComoTxt(Map<String, String> perfis) {
-    String fileName = "Perfis_V1.txt";
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-      for (Map.Entry<String, String> entry : perfis.entrySet()) {
-        writer.write(entry.getKey() + ": " + entry.getValue());
-        writer.newLine();
-      }
-      return "O arquivo foi convertido e salvo como " + fileName + " com sucesso.";
-    } catch (IOException e) {
-      e.printStackTrace();
-      return "Erro ao salvar o arquivo: " + e.getMessage();
-    }
-  }
-
   // obterArquivo
   public String obterArquivo(String nomeArquivo) {
 

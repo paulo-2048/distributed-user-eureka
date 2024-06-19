@@ -11,6 +11,7 @@ import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
 
@@ -36,6 +37,8 @@ public class ISPService {
 
     // http://localhost:8100/dns/{service}/obterArquivo/{nomeArquivo}
 
+    String fileName = Params.get(1);
+
     String ipService = getServiceIP(service);
 
     String fileBase64 = getServiceResponse(ipService, Params);
@@ -43,20 +46,26 @@ public class ISPService {
     if (fileBase64 == null) {
       return null;
     }
-    // tranform file to resource
 
-    // Decode Base64 string to byte[]
     byte[] decodedBytes = Base64.getDecoder().decode(fileBase64);
 
-    // Write bytes to a temporary file
+    Path basePath = new File("distributed-user-main/temp/").toPath();
+
+    // Constrói o caminho completo para o arquivo
+    Path fullPath = Paths.get(basePath.toString(), fileName);
+
     File tempFile;
     try {
-      tempFile = File.createTempFile("temp", ".txt");
 
-      tempFile.deleteOnExit(); // Clean up after JVM exits
-      try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-        fos.write(decodedBytes);
+      if (!Files.exists(fullPath.getParent())) {
+        Files.createDirectories(fullPath.getParent());
       }
+
+      tempFile = new File(fullPath.toString());
+      FileOutputStream fos = new FileOutputStream(tempFile);
+      fos.write(decodedBytes);
+      fos.close();
+
       return new FileSystemResource(tempFile);
 
     } catch (Exception e) {
@@ -280,6 +289,38 @@ public class ISPService {
       return serviceResponse;
     } catch (Exception e) {
       System.out.println("Erro ao acessar o serviço");
+      e.printStackTrace();
+    }
+
+    return null;
+  }
+
+  public Resource createFile(String content, String fileName) {
+
+    Path basePath = new File("distributed-user-main/temp/").toPath();
+
+    // Constrói o caminho completo para o arquivo
+    Path fullPath = Paths.get(basePath.toString(), fileName);
+
+    // /if (!Files.exists(fullPath.getParent())) {
+    // try {
+    // Files.createDirectory(fullPath.getParent());
+    // } catch (IOException e) {
+    // e.printStackTrace();
+    // return null;
+    // }
+    // }
+
+    try {
+
+      if (!Files.exists(fullPath.getParent())) {
+        Files.createDirectories(fullPath.getParent());
+      }
+
+      Path tempFile = new File(fullPath.toString()).toPath();
+      Files.write(tempFile, content.getBytes());
+      return new FileSystemResource(tempFile);
+    } catch (IOException e) {
       e.printStackTrace();
     }
 

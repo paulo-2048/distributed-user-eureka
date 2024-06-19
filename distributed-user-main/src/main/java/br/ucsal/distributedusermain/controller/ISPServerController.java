@@ -42,13 +42,26 @@ public class ISPServerController {
     }
   }
 
-  @PostMapping("/{serviceName}/salvar")
-  public String postServiceName(@PathVariable String serviceName) {
+  @GetMapping("/{serviceName}/salvar")
+  public ResponseEntity<Resource> postServiceName(@PathVariable String serviceName) {
 
     try {
-      return ISPService.getService(serviceName);
+
+      String profiles = ISPService.getService(serviceName); // Obetem os profiles
+
+      Resource profilesFile = ISPService.createFile(profiles, "Perfis_V1.txt");
+
+      if (profilesFile == null) {
+        throw new Exception("Erro ao criar o Arquivo!");
+      }
+
+      return ResponseEntity.ok()
+          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + profilesFile.getFilename() + "\"")
+          .contentType(MediaType.APPLICATION_OCTET_STREAM)
+          .body(profilesFile);
+
     } catch (Exception e) {
-      return "Erro ao acessar o serviço";
+      return ResponseEntity.badRequest().body(null);
     }
   }
 
